@@ -1,44 +1,77 @@
 #include <iostream>
-#include <list>
 #include <vector>
-#include <unordered_map>
-#include <algorithm>
-using namespace std;
+#include <list>
 
 int main() {
-    int N,M;
-    char coma;
-    cin >> N >> coma >> M;
+    int V, E;
+    char c;
 
-    // vector that stores the number of friends of each person
-    vector<int>friendships(N+1,0);
-
-    // vector that stores the number of people that have a certain number of friends
-    vector<int>friendCount(M+1,0);
-
-    for (int i = 0; i < M; i++) {
+    //reads paragraph
+    std::cin >> V; std::cin >> c; std ::cin >> E;
+    std::list<int> *FWAdjList = new std::list<int>[V+1];
+    std::list<int> *RevAdjList = new std::list<int>[V+1];
+    
+    for (int i = 0; i < E; i++) {
         int u, v;
-        cin >> u >> v;
-        friendships[u]++; // increments the number of friends of u  
+        std::cin >> u; std::cin >> v;
+        FWAdjList[u].push_front(v);
+        RevAdjList[v].push_front(u);
     }
 
-    for(int i = 0; i <= M; i++){
-        for(int j = 0; j <= N; j++)
-            if(friendships[i] == j)
-                friendCount[j]++;
+    std::vector<int> hist;
+    hist.resize(V);
+
+    //Initializes to 0
+    for (int i = 0; i < V; i++) {
+        hist[i] = 0;
     }
 
-    int maxFriends = *max_element(friendships.begin(), friendships.end());
-
-    cout << "Histograma 1" << endl;
-    for (int i = 0; i < N; ++i) {
-        cout << friendCount[i] << endl;
+    //Calculates the histogram
+    for (int i = 1; i <= V; i++) {
+        hist[FWAdjList[i].size()]++;
     }
 
-    cout << "Histograma 2" << endl;
-    for (int i = 0; i <= maxFriends; ++i) {
-        cout << count(friendships.begin(), friendships.end(), i) << endl;
+    //print histogram
+    std::cout << "Histograma 1" << "\n";
+    for (int i = 0; i < V; ++i) {
+        std::cout << hist[i] << "\n";
     }
+
+
+    for (int i = 0; i < V; i++) {
+        hist[i] = 0;
+    }
+
+    for (int i = 1; i <= V; i++) {
+        hist[RevAdjList[i].size()]++;
+    }
+
+    std::cout << "Histograma 2" << "\n";
+    for (int i = 0; i < V; ++i) {
+        std::cout << hist[i] << "\n";
+    }
+
+    //Prints matrix
+    std::cout << "Matriz" << "\n";
+    for (int i = 1; i <= V; i++) {
+        for (int j = 1; j <= V; j++) {
+            int friends = 0;
+            for (std::list<int>::iterator it_i = FWAdjList[i].begin();
+                    it_i != FWAdjList[i].end(); it_i++) {
+                for (int t: FWAdjList[j]) {
+                    if ((*it_i) == t) {
+                        friends++;
+                    }
+                }
+            }
+            std::cout << friends << " ";
+        }
+        std::cout << "\n";  
+    }
+
+    delete[] FWAdjList;
+    delete[] RevAdjList;
 
     return 0;
+
 }
