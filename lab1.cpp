@@ -2,9 +2,25 @@
 #include <vector>
 #include <list>
 
+void printHistograms(const std::list<int>* list, const char* title, int V) {
+    std::vector<int> hist(V, 0);
+
+    for (int i = 1; i <= V; i++) {
+        hist[list[i].size()]++;
+    }
+    
+    std::cout << title << "\n";
+    for (int i = 0; i < V; ++i) {
+        std::cout << hist[i] << "\n";
+    }
+
+}
+
 int main() {
     int V, E;
     char c;
+    int totalFriends = 0;
+    int totalPairs = 0;
 
     //reads paragraph
     std::cin >> V; std::cin >> c; std ::cin >> E;
@@ -21,35 +37,9 @@ int main() {
     std::vector<int> hist;
     hist.resize(V);
 
-    //Initializes to 0
-    for (int i = 0; i < V; i++) {
-        hist[i] = 0;
-    }
-
-    //Calculates the histogram
-    for (int i = 1; i <= V; i++) {
-        hist[FWAdjList[i].size()]++;
-    }
-
-    //print histogram
-    std::cout << "Histograma 1" << "\n";
-    for (int i = 0; i < V; ++i) {
-        std::cout << hist[i] << "\n";
-    }
-
-
-    for (int i = 0; i < V; i++) {
-        hist[i] = 0;
-    }
-
-    for (int i = 1; i <= V; i++) {
-        hist[RevAdjList[i].size()]++;
-    }
-
-    std::cout << "Histograma 2" << "\n";
-    for (int i = 0; i < V; ++i) {
-        std::cout << hist[i] << "\n";
-    }
+    //Prints histograms
+    printHistograms(FWAdjList, "Histograma 1", V);
+    printHistograms(RevAdjList, "Histograma 2", V);
 
     //Prints matrix
     std::cout << "Matriz" << "\n";
@@ -63,11 +53,17 @@ int main() {
                         friends++;
                     }
                 }
+            totalFriends += friends;
+            totalPairs++;
             }
             std::cout << friends << " ";
         }
         std::cout << "\n";  
     }
+
+    //Prints average
+    double averageFriends = (totalPairs > 0) ? static_cast<double>(totalFriends) / totalPairs : 0.0;
+    std::cout << "Media de amigos: " << averageFriends << "\n";
 
     delete[] FWAdjList;
     delete[] RevAdjList;
